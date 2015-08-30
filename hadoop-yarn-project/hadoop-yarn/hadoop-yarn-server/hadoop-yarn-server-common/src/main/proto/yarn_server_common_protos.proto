@@ -30,12 +30,17 @@ enum NodeActionProto {
   SHUTDOWN = 2;
 }
 
+message InMemoryBlockProto {
+	optional string block_id = 1;
+	optional int32 number_of_pages = 2;
+}
 message NodeStatusProto {
   optional NodeIdProto node_id = 1;
   optional int32 response_id = 2;
   repeated ContainerStatusProto containersStatuses = 3;
   optional NodeHealthStatusProto nodeHealthStatus = 4;
   repeated ApplicationIdProto keep_alive_applications = 5;
+  repeated InMemoryBlockProto in_mem_blocks = 6;
 }
 
 message MasterKeyProto {
