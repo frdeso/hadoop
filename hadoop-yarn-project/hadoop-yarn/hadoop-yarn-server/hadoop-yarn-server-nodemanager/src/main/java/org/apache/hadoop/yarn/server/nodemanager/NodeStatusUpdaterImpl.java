@@ -431,7 +431,7 @@ public class NodeStatusUpdaterImpl extends AbstractService implements
     List<ContainerStatus> containersStatuses = getContainerStatuses();
     NodeStatus nodeStatus =
         NodeStatus.newInstance(nodeId, responseId, containersStatuses,
-          createKeepAliveApplicationList(), nodeHealthStatus);
+          createKeepAliveApplicationList(), nodeHealthStatus, null);
 
     return nodeStatus;
   }

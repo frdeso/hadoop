@@ -30,13 +30,15 @@ public abstract class NodeStatus {
   public static NodeStatus newInstance(NodeId nodeId, int responseId,
       List<ContainerStatus> containerStatuses,
       List<ApplicationId> keepAliveApplications,
-      NodeHealthStatus nodeHealthStatus) {
+      NodeHealthStatus nodeHealthStatus,
+      List<InMemoryBlock> inMemoryBlocks) {
     NodeStatus nodeStatus = Records.newRecord(NodeStatus.class);
     nodeStatus.setResponseId(responseId);
     nodeStatus.setNodeId(nodeId);
     nodeStatus.setContainersStatuses(containerStatuses);
     nodeStatus.setKeepAliveApplications(keepAliveApplications);
     nodeStatus.setNodeHealthStatus(nodeHealthStatus);
+    nodeStatus.setInMemoryBlocks(inMemoryBlocks);
     return nodeStatus;
   }
 
@@ -55,4 +57,7 @@ public abstract class NodeStatus {
 
   public abstract void setNodeId(NodeId nodeId);
   public abstract void setResponseId(int responseId);
+
+  public abstract void setInMemoryBlocks(List<InMemoryBlock> inMemoryBlocks);
+  public abstract List<InMemoryBlock> getInMemoryBlocks();
 }

@@ -32,12 +32,13 @@ import org.apache.hadoop.yarn.api.records.impl.pb.NodeIdPBImpl;
 import org.apache.hadoop.yarn.proto.YarnProtos.ApplicationIdProto;
 import org.apache.hadoop.yarn.proto.YarnProtos.ContainerStatusProto;
 import org.apache.hadoop.yarn.proto.YarnProtos.NodeIdProto;
+import org.apache.hadoop.yarn.proto.YarnServerCommonProtos.InMemoryBlockProto;
 import org.apache.hadoop.yarn.proto.YarnServerCommonProtos.NodeHealthStatusProto;
 import org.apache.hadoop.yarn.proto.YarnServerCommonProtos.NodeStatusProto;
 import org.apache.hadoop.yarn.proto.YarnServerCommonProtos.NodeStatusProtoOrBuilder;
 import org.apache.hadoop.yarn.server.api.records.NodeHealthStatus;
 import org.apache.hadoop.yarn.server.api.records.NodeStatus;
-    
+import org.apache.hadoop.yarn.server.api.records.InMemoryBlock;
 
 public class NodeStatusPBImpl extends NodeStatus {
   NodeStatusProto proto = NodeStatusProto.getDefaultInstance();
@@ -48,7 +49,8 @@ public class NodeStatusPBImpl extends NodeStatus {
   private List<ContainerStatus> containers = null;
   private NodeHealthStatus nodeHealthStatus = null;
   private List<ApplicationId> keepAliveApplications = null;
-  
+  private List<InMemoryBlock> inMemoryBlocks = null;
+
   public NodeStatusPBImpl() {
     builder = NodeStatusProto.newBuilder();
   }
@@ -254,7 +256,20 @@ public class NodeStatusPBImpl extends NodeStatus {
     }
     
   }
-  
+
+  private synchronized void initInMemoryBlocks() {
+    if (this.inMemoryBlocks != null) {
+      return;
+    }
+    NodeStatusProtoOrBuilder p = viaProto ? proto : builder;
+    List<InMemoryBlockProto> list = p.getInMemBlocksList();
+    this.inMemoryBlocks = new ArrayList<InMemoryBlock>();
+
+    for (InMemoryBlockProto c : list) {
+      this.inMemoryBlocks.add(convertFromProtoFormat(c));
+    }
+  }
+
   private synchronized void initKeepAliveApplications() {
     if (this.keepAliveApplications != null) {
       return;
@@ -322,5 +337,19 @@ public class NodeStatusPBImpl extends NodeStatus {
   
   private ApplicationIdProto convertToProtoFormat(ApplicationId c) {
     return ((ApplicationIdPBImpl)c).getProto();
+  }
+
+  private InMemoryBlockPBImpl convertFromProtoFormat(InMemoryBlockProto c) {
+    return new InMemoryBlockPBImpl(c);
+  }
+  @Override
+  public void setInMemoryBlocks(List<InMemoryBlock> inMemoryBlocks) {
+    this.inMemoryBlocks = inMemoryBlocks;
+  }
+
+  @Override
+  public List<InMemoryBlock> getInMemoryBlocks() {
+    initInMemoryBlocks();
+    return this.inMemoryBlocks;
   }
 }
