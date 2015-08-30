@@ -164,6 +164,11 @@
       <groupId>org.fusesource.leveldbjni</groupId>
       <artifactId>leveldbjni-all</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.zeromq</groupId>
+      <artifactId>jzmq</artifactId>
+      <version>3.1.0</version>
+    </dependency>
   </dependencies>
 
   <profiles>
